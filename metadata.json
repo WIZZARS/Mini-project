@@ -1,0 +1,8 @@
+{
+  "name": "AI Mock Interview Analyzer",
+  "description": "A professional-grade AI interview platform featuring ATS resume analysis, JD-matching, and a live AI avatar interviewer.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
