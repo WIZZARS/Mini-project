@@ -7,6 +7,8 @@ export enum AppStep {
   ANALYSIS = 'ANALYSIS'
 }
 
+export type InterviewStage = 'Behavioral' | 'Technical' | 'Culture Fit' | 'System Design' | 'Case Study';
+
 export interface ResumeData {
   score: number;
   extractedSkills: string[];
@@ -18,6 +20,7 @@ export interface ResumeData {
 export interface InterviewSession {
   resume: string;
   jobDescription: string;
+  stage: InterviewStage;
   questions: string[];
   currentQuestionIndex: number;
   transcripts: { speaker: 'AI' | 'USER'; text: string; timestamp: number }[];

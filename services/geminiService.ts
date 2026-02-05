@@ -1,6 +1,6 @@
 
 import { GoogleGenAI, Type, Part } from "@google/genai";
-import { ResumeData, AnalysisReport } from "../types";
+import { ResumeData, AnalysisReport, InterviewStage } from "../types";
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
@@ -65,9 +65,33 @@ export const parseResumeAndJD = async (resume: ResumeInput, jdText: string): Pro
   return JSON.parse(response.text);
 };
 
-export const generateInterviewQuestions = async (resume: ResumeInput, jd: string): Promise<string[]> => {
+export const generateInterviewQuestions = async (resume: ResumeInput, jd: string, stage: InterviewStage): Promise<string[]> => {
   const resumePart = getResumePart(resume);
-  const promptPart = { text: `Based on this candidate's resume and the job description, generate 5 highly relevant and challenging interview questions.\n\nJob Description: ${jd}` };
+  
+  let stageFocus = "";
+  switch(stage) {
+    case 'Behavioral':
+      stageFocus = "Focus heavily on soft skills, past experiences, conflict resolution, and leadership. Questions should encourage STAR method responses.";
+      break;
+    case 'Technical':
+      stageFocus = "Focus on hard skills, specific tech stack mentioned in the JD, architectural decisions, and coding practices. Ask about implementation details.";
+      break;
+    case 'Culture Fit':
+      stageFocus = "Focus on values alignment, work-life balance preferences, team collaboration style, and long-term career goals within this specific company.";
+      break;
+    case 'System Design':
+      stageFocus = "Focus on high-level architecture, scalability, trade-offs, and designing complex components based on requirements from the JD.";
+      break;
+    case 'Case Study':
+      stageFocus = "Focus on analytical thinking, problem-solving frameworks, and business logic. Present a specific scenario related to the job role.";
+      break;
+  }
+
+  const promptPart = { 
+    text: `Based on this candidate's resume and the job description, generate 5 highly relevant and challenging interview questions for a ${stage} interview stage. 
+    Focus: ${stageFocus}
+    Job Description: ${jd}` 
+  };
 
   const response = await ai.models.generateContent({
     model: "gemini-3-pro-preview",
